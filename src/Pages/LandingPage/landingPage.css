@@ -1,0 +1,35 @@
+.landing {
+    display: flex;
+    min-height: 750px;
+    height: 100vh;
+    max-height: 833px;
+    flex-direction: column;
+}
+
+.landing .content-fill .content-1 {
+    min-width: 350px;
+    flex: 1;
+    position: relative;
+}
+
+.landing .content-fill {
+    min-width: 100vw;
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.content-fill.flex-1 {
+    flex: 1;
+}
+
+.content-fill.flex-2 {
+    flex: 2;
+}
+
+.type-writer {
+    color: white;
+    text-align: center;
+    font-size: 2rem;
+    width: 100%;
+}

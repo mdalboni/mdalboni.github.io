@@ -1,0 +1,40 @@
+.illustration-editor {}
+
+.code {
+    top: calc( 50% - 142px);
+    left: 15%;
+    position: absolute;
+    height: 285px;
+    background: #2b2b2b;
+    box-shadow: 0px 4px 30px rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    z-index: 5;
+    min-width: 100px;
+    width: calc(100% - 30%);
+    max-width: 670px;
+}
+
+.code header {
+    display: grid;
+    grid-template-columns: 36px auto 36px;
+    align-items: center;
+}
+
+.code svg {
+    margin: 10px;
+    fill: #FFF;
+}
+
+.code h1 {
+    font-family: Lato, sans-serif;
+    font-weight: 900;
+    font-size: 14px;
+    letter-spacing: 1.57px;
+    color: #ffffff;
+    margin: 0;
+}
+
+.code-content {
+    margin-left: 15px;
+    margin-right: 15px;
+}

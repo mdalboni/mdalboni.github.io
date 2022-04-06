@@ -1,0 +1,61 @@
+.HomeHeader {
+    color: white;
+    padding: 20px 10px 10px 10px;
+    margin: 0 10px 0 10px;
+    display: flex;
+}
+
+.Logo img {
+    width: 110px;
+    height: 70px;
+}
+
+.HomeMenu {
+    flex: 10;
+    display: flex;
+}
+
+.HomeMenuSpacer {
+    flex: 4
+}
+
+.HomeMenuItem {
+    flex: 1;
+    max-width: 150px;
+    display: flex;
+    text-align: center;
+    align-items: center;
+}
+
+.HomeMenuItem a {
+    color: white!important;
+    text-decoration: none;
+    font-weight: bold;
+    text-align: center;
+    font-size: 1.3rem;
+    margin: 0 15px 0 15px;
+    transition-timing-function: cubic-bezier(0.19, 1, 0.22, 1);
+    transition-duration: 0.5s;
+    transition-delay: 0.0394737;
+    position: relative;
+    display: inline-block;
+    text-decoration: none;
+}
+
+.HomeMenuItem a:hover::after {
+    transform: scalex(1);
+    transform-origin: left;
+}
+
+.HomeMenuItem a::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    left: 0;
+    bottom: 0.001em;
+    background-color: currentColor;
+    transform: scalex(0);
+    transform-origin: right;
+    transition: transform .6s cubic-bezier(.19, 1, .22, 1);
+}
