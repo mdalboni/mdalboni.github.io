@@ -7,10 +7,6 @@ import Typewriter from 'typewriter-effect';
 
 
 function LandingPage() {
-    var typewriter = new Typewriter('#typewriter', {
-        strings: ['Hello', 'World'],
-        autoStart: true,
-    });
     return (
         <div>
             <HomeHeader></HomeHeader>
@@ -49,7 +45,7 @@ function LandingTextSection() {
     const data = {
         name: 'Maxwell M Dalboni',
         varname: 'mdalboni',
-        nationality: 'Brazillian',
+        nationality: 'Brazilian',
         livingIn: 'Brazil',
         birthYear: 1992,
         spokenLangs: ['ptBR', 'en'],
