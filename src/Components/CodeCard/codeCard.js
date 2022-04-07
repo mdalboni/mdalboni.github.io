@@ -1,7 +1,7 @@
 
 import React from 'react';
 import SyntaxHighlighter from 'react-syntax-highlighter';
-import darcula from 'react-syntax-highlighter/dist/cjs/styles/hljs';
+import { darcula } from 'react-syntax-highlighter/dist/cjs/styles/hljs';
 import './codeCard.css';
 
 function UserCodePythonCard({ varname, name, nationality, livingIn, birthYear, spokenLangs, progLangs, databases, wishes, optional = '' }) {
