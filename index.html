@@ -1,43 +1,44 @@
 <!DOCTYPE html>
-<!-- ponytail: single-file static HTML/CSS. Max ceiling: personal portfolio/resume. Upgrade path: add static generator (Zola/Hugo) if multi-page blog is needed. -->
+<!-- ponytail: single-file static HTML/CSS. Max ceiling: personal portfolio. Upgrade path: SSG (Zola/Hugo) if blog posts or dynamic content needed. -->
 <html lang="pt-BR">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maxwell M. Dalboni | Software Engineer</title>
-  <meta name="description" content="Maxwell M. Dalboni - Senior Backend & AI Tooling Engineer. Python, Go, Distributed Systems e ecossistema DeepSeek Harness.">
-  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
-  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <title>Maxwell M. Dalboni — Backend &amp; Platform Engineer</title>
+  <meta name="description" content="Maxwell M. Dalboni - Senior Backend Engineer, Homelab enthusiast & DSH tooling developer.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
   <style>
     :root {
-      --bg: #0b0f19;
-      --card-bg: #111827;
-      --card-border: #1f2937;
-      --card-hover: #1e293b;
-      --text: #f3f4f6;
-      --text-muted: #9ca3af;
-      --primary: #38bdf8;
-      --primary-hover: #7dd3fc;
-      --accent: #10b981;
-      --tag-bg: #1e293b;
-      --tag-text: #93c5fd;
-      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
-      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+      --bg: #07090e;
+      --surface: #0e131f;
+      --surface-elevated: #141b2d;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-hover: rgba(56, 189, 248, 0.4);
+      --text: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      --accent: #38bdf8;
+      --accent-glow: rgba(56, 189, 248, 0.15);
+      --green: #10b981;
+      --green-glow: rgba(16, 185, 129, 0.2);
+      --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     }
 
     @media (prefers-color-scheme: light) {
       :root {
         --bg: #f8fafc;
-        --card-bg: #ffffff;
-        --card-border: #e2e8f0;
-        --card-hover: #f1f5f9;
+        --surface: #ffffff;
+        --surface-elevated: #f1f5f9;
+        --border: rgba(0, 0, 0, 0.08);
+        --border-hover: rgba(2, 132, 199, 0.5);
         --text: #0f172a;
-        --text-muted: #64748b;
-        --primary: #0284c7;
-        --primary-hover: #0369a1;
-        --accent: #059669;
-        --tag-bg: #e0f2fe;
-        --tag-text: #0369a1;
+        --text-muted: #475569;
+        --text-dim: #94a3b8;
+        --accent: #0284c7;
+        --accent-glow: rgba(2, 132, 199, 0.1);
+        --green: #059669;
+        --green-glow: rgba(5, 150, 105, 0.15);
       }
     }
 
@@ -48,195 +49,316 @@
     }
 
     body {
-      font-family: var(--font-sans);
       background-color: var(--bg);
+      background-image: radial-gradient(ellipse 90% 60% at 50% -15%, var(--accent-glow), transparent);
+      background-attachment: fixed;
       color: var(--text);
+      font-family: var(--sans);
       line-height: 1.6;
       -webkit-font-smoothing: antialiased;
-      padding: 2.5rem 1.25rem 4rem;
+      padding: 3rem 1.5rem 5rem;
     }
 
-    .container {
-      max-width: 720px;
+    .wrapper {
+      max-width: 760px;
       margin: 0 auto;
     }
 
+    /* Header */
     header {
-      margin-bottom: 2.5rem;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 1.75rem;
+      margin-bottom: 3.5rem;
     }
 
-    .status-badge {
+    .top-meta {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+    }
+
+    .badge {
       display: inline-flex;
       align-items: center;
-      gap: 0.5rem;
-      font-size: 0.825rem;
-      color: var(--text-muted);
-      background: var(--tag-bg);
-      padding: 0.25rem 0.65rem;
+      gap: 0.45rem;
+      padding: 0.25rem 0.75rem;
       border-radius: 9999px;
-      margin-bottom: 1rem;
-      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      font-family: var(--mono);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
     }
 
-    .status-dot {
-      width: 8px;
-      height: 8px;
+    .badge-dot {
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
-      background-color: var(--accent);
-      box-shadow: 0 0 8px var(--accent);
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green-glow);
     }
 
     h1 {
-      font-size: 2.2rem;
-      font-weight: 700;
-      letter-spacing: -0.025em;
-      line-height: 1.2;
-      margin-bottom: 0.35rem;
+      font-size: 2.5rem;
+      font-weight: 800;
+      letter-spacing: -0.035em;
+      line-height: 1.15;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(180deg, var(--text) 30%, var(--text-muted) 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
     }
 
-    .subtitle {
+    .role {
       font-size: 1.15rem;
-      color: var(--primary);
       font-weight: 500;
-      margin-bottom: 0.85rem;
+      color: var(--accent);
+      margin-bottom: 1rem;
+      letter-spacing: -0.01em;
     }
 
-    .bio {
+    .intro {
+      font-size: 1.05rem;
       color: var(--text-muted);
-      font-size: 1rem;
-      max-width: 640px;
+      max-width: 650px;
     }
 
+    /* Sections */
     section {
-      margin-bottom: 2.75rem;
+      margin-bottom: 3.5rem;
     }
 
-    h2 {
-      font-size: 1.25rem;
-      font-weight: 600;
-      letter-spacing: -0.015em;
+    .section-title {
+      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--text-dim);
+      font-family: var(--mono);
       margin-bottom: 1.25rem;
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      border-left: 3px solid var(--primary);
-      padding-left: 0.65rem;
+      gap: 0.75rem;
     }
 
-    .skills-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.5rem;
+    .section-title::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--border);
     }
 
-    .skill-tag {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 0.35rem 0.75rem;
-      border-radius: 6px;
-      font-size: 0.85rem;
-      font-family: var(--font-mono);
-      color: var(--text);
+    /* Homelab Showcase Card */
+    .homelab-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      margin-bottom: 1rem;
     }
 
-    .projects-list {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
+    .homelab-box::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), transparent);
     }
 
-    .project-card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      padding: 1.15rem;
-      transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
-      text-decoration: none;
-      color: inherit;
-      display: block;
-    }
-
-    .project-card:hover {
-      border-color: var(--primary);
-      background: var(--card-hover);
-      transform: translateY(-1px);
-    }
-
-    .project-header {
+    .homelab-header {
       display: flex;
       justify-content: space-between;
       align-items: baseline;
-      margin-bottom: 0.35rem;
+      margin-bottom: 0.75rem;
+      flex-wrap: wrap;
       gap: 0.5rem;
     }
 
-    .project-title {
-      font-size: 1.05rem;
+    .homelab-title {
+      font-size: 1.1rem;
       font-weight: 600;
-      color: var(--primary);
-      font-family: var(--font-mono);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
     }
 
-    .project-desc {
-      font-size: 0.9rem;
+    .homelab-host {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: var(--surface-elevated);
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+    }
+
+    .homelab-desc {
+      font-size: 0.95rem;
       color: var(--text-muted);
-      margin-bottom: 0.75rem;
-      line-height: 1.45;
+      margin-bottom: 1.15rem;
+      line-height: 1.55;
     }
 
-    .project-tags {
+    .homelab-specs {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .spec-item {
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 0.65rem 0.85rem;
+    }
+
+    .spec-label {
+      font-size: 0.72rem;
+      font-family: var(--mono);
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.2rem;
+    }
+
+    .spec-val {
+      font-size: 0.88rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    /* Projects Grid */
+    .projects-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 1.25rem 1.4rem;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+      transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+    }
+
+    .card:hover {
+      border-color: var(--border-hover);
+      background: var(--surface-elevated);
+      transform: translateY(-2px);
+    }
+
+    .card-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .card-title {
+      font-family: var(--mono);
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--accent);
+    }
+
+    .card-arrow {
+      color: var(--text-dim);
+      font-size: 0.9rem;
+      transition: transform 0.15s ease, color 0.15s ease;
+    }
+
+    .card:hover .card-arrow {
+      color: var(--accent);
+      transform: translate(2px, -2px);
+    }
+
+    .card-desc {
+      font-size: 0.92rem;
+      color: var(--text-muted);
+      margin-bottom: 0.9rem;
+      line-height: 1.5;
+    }
+
+    .tags {
       display: flex;
       flex-wrap: wrap;
-      gap: 0.35rem;
+      gap: 0.4rem;
     }
 
-    .project-tags span {
-      font-size: 0.75rem;
-      font-family: var(--font-mono);
-      background: var(--tag-bg);
-      color: var(--tag-text);
-      padding: 0.15rem 0.45rem;
+    .tag {
+      font-family: var(--mono);
+      font-size: 0.72rem;
+      padding: 0.2rem 0.5rem;
       border-radius: 4px;
+      background: var(--surface-elevated);
+      border: 1px solid var(--border);
+      color: var(--text-muted);
     }
 
-    .contact-links {
+    /* Skills Pill Grid */
+    .skills-cluster {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .skill-pill {
+      font-family: var(--mono);
+      font-size: 0.85rem;
+      padding: 0.4rem 0.85rem;
+      border-radius: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text);
+    }
+
+    /* Links */
+    .links-grid {
       display: flex;
       flex-wrap: wrap;
       gap: 0.75rem;
     }
 
-    .btn {
+    .btn-link {
       display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
+      padding: 0.65rem 1.15rem;
+      border-radius: 8px;
+      background: var(--surface);
+      border: 1px solid var(--border);
       color: var(--text);
-      padding: 0.55rem 1rem;
-      border-radius: 6px;
-      font-size: 0.9rem;
       text-decoration: none;
+      font-size: 0.9rem;
       font-weight: 500;
-      transition: border-color 0.15s ease, color 0.15s ease;
+      transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
     }
 
-    .btn:hover {
-      border-color: var(--primary);
-      color: var(--primary);
+    .btn-link:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+      background: var(--surface-elevated);
     }
 
+    /* Footer */
     footer {
-      border-top: 1px solid var(--card-border);
-      padding-top: 1.5rem;
-      font-size: 0.85rem;
-      color: var(--text-muted);
+      border-top: 1px solid var(--border);
+      padding-top: 2rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
-      gap: 0.5rem;
+      gap: 1rem;
+      font-size: 0.85rem;
+      color: var(--text-dim);
     }
 
     footer a {
@@ -245,114 +367,151 @@
     }
 
     footer a:hover {
-      color: var(--primary);
+      color: var(--accent);
     }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="wrapper">
     <header>
-      <div class="status-badge">
-        <span class="status-dot"></span>
-        <span>São Paulo, Brazil • Backend &amp; AI Tooling</span>
+      <div class="top-meta">
+        <div class="badge">
+          <span class="badge-dot"></span>
+          <span>homelab: online</span>
+        </div>
+        <div class="badge">
+          <span>São Paulo, BR</span>
+        </div>
+        <div class="badge">
+          <span>UTC-3</span>
+        </div>
       </div>
       <h1>Maxwell M. Dalboni</h1>
-      <p class="subtitle">Senior Software Engineer</p>
-      <p class="bio">
-        Engenheiro de software focado em backends resilientes, arquitetura distribuída e tooling para fluxos de trabalho com IA. Desenvolvedor de plugins e extensões para DeepSeek Harness (DSH).
+      <p class="role">Senior Backend &amp; Platform Engineer</p>
+      <p class="intro">
+        Engenheiro focado em arquitetura de backend, sistemas resilientes, self-hosting e tooling para IA. Criador de plugins e infraestrutura para o ecossistema DeepSeek Harness.
       </p>
     </header>
 
     <main>
+      <!-- Homelab Section -->
       <section>
-        <h2>Tecnologias &amp; Especialidades</h2>
-        <div class="skills-grid">
-          <span class="skill-tag">Python</span>
-          <span class="skill-tag">Go</span>
-          <span class="skill-tag">PostgreSQL</span>
-          <span class="skill-tag">Redis / Key-Value</span>
-          <span class="skill-tag">Distributed Systems</span>
-          <span class="skill-tag">DeepSeek Harness Plugins</span>
-          <span class="skill-tag">Docker &amp; Linux</span>
-          <span class="skill-tag">REST &amp; gRPC</span>
+        <div class="section-title">01 / Homelab &amp; Infraestrutura</div>
+        <div class="homelab-box">
+          <div class="homelab-header">
+            <span class="homelab-title">🖥️ Private Homelab Cluster</span>
+            <span class="homelab-host">lab.dalboni.com.br</span>
+          </div>
+          <p class="homelab-desc">
+            Ambiente bare-metal local dedicado a auto-hospedagem de serviços críticos, orquestração de agentes de IA, automação e desenvolvimento. Todo o tráfego externo é roteado com TLS automatizado e malha privada segura.
+          </p>
+          <div class="homelab-specs">
+            <div class="spec-item">
+              <div class="spec-label">Hardware &amp; OS</div>
+              <div class="spec-val">Mini-PC x86_64 • Linux Kernel 6.8+</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Workloads</div>
+              <div class="spec-val">DeepSeek Harness, Docker, Databases</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Rede &amp; Segurança</div>
+              <div class="spec-val">Tailscale mesh • Reverse Proxy • SSL</div>
+            </div>
+            <div class="spec-item">
+              <div class="spec-label">Operação</div>
+              <div class="spec-val">24/7 self-hosted • Backups locais</div>
+            </div>
+          </div>
         </div>
       </section>
 
+      <!-- Projects Section -->
       <section>
-        <h2>Projetos em Destaque</h2>
-        <div class="projects-list">
-          <a href="https://github.com/mdalboni/dsh-spotlight" class="project-card" target="_blank" rel="noopener">
-            <div class="project-header">
-              <span class="project-title">dsh-spotlight</span>
+        <div class="section-title">02 / DeepSeek Harness Tooling &amp; Open Source</div>
+        <div class="projects-grid">
+          <a href="https://github.com/mdalboni/dsh-spotlight" class="card" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="card-title">dsh-spotlight</span>
+              <span class="card-arrow">↗</span>
             </div>
-            <p class="project-desc">Diálogo de busca global estilo Spotlight / IntelliJ para sessões e chats no DeepSeek Harness.</p>
-            <div class="project-tags">
-              <span>TypeScript</span>
-              <span>DSH Plugin</span>
-              <span>UX / Productivity</span>
-            </div>
-          </a>
-
-          <a href="https://github.com/mdalboni/dsh-mobile" class="project-card" target="_blank" rel="noopener">
-            <div class="project-header">
-              <span class="project-title">dsh-mobile</span>
-            </div>
-            <p class="project-desc">Ajustes de viewport lock, overscroll containment, redimensionamento de teclado virtual e retração automática da barra lateral para mobile no DSH.</p>
-            <div class="project-tags">
-              <span>JavaScript</span>
-              <span>Mobile UX</span>
-              <span>DSH Plugin</span>
+            <p class="card-desc">Diálogo global de busca estilo Spotlight / IntelliJ para navegar instantaneamente por sessões, arquivos e chats do DSH.</p>
+            <div class="tags">
+              <span class="tag">TypeScript</span>
+              <span class="tag">DSH Plugin</span>
+              <span class="tag">Productivity</span>
             </div>
           </a>
 
-          <a href="https://github.com/mdalboni/dsh-static-token" class="project-card" target="_blank" rel="noopener">
-            <div class="project-header">
-              <span class="project-title">dsh-static-token</span>
+          <a href="https://github.com/mdalboni/dsh-mobile" class="card" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="card-title">dsh-mobile</span>
+              <span class="card-arrow">↗</span>
             </div>
-            <p class="project-desc">Token estático configurável para autenticação headless e inicialização estável na Web GUI do DSH.</p>
-            <div class="project-tags">
-              <span>Security</span>
-              <span>DevOps</span>
-              <span>DSH Plugin</span>
-            </div>
-          </a>
-
-          <a href="https://github.com/mdalboni/dsh-turn-title" class="project-card" target="_blank" rel="noopener">
-            <div class="project-header">
-              <span class="project-title">dsh-turn-title</span>
-            </div>
-            <p class="project-desc">Titulação automática de sessões após a primeira iteração com botão rápido de atualização no cabeçalho.</p>
-            <div class="project-tags">
-              <span>DSH Plugin</span>
-              <span>LLM Workflow</span>
+            <p class="card-desc">Melhorias ergonômicas mobile para DSH: viewport lock, overscroll containment, ajuste para teclado virtual e recolhimento inteligente de sidebar.</p>
+            <div class="tags">
+              <span class="tag">JavaScript</span>
+              <span class="tag">Mobile UX</span>
+              <span class="tag">DSH Plugin</span>
             </div>
           </a>
 
-          <a href="https://github.com/mdalboni/transcriber_cli" class="project-card" target="_blank" rel="noopener">
-            <div class="project-header">
-              <span class="project-title">transcriber_cli</span>
+          <a href="https://github.com/mdalboni/dsh-static-token" class="card" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="card-title">dsh-static-token</span>
+              <span class="card-arrow">↗</span>
             </div>
-            <p class="project-desc">Utilitário de linha de comando para transcrição de áudio local e rápida via terminal.</p>
-            <div class="project-tags">
-              <span>Python</span>
-              <span>CLI</span>
-              <span>Audio</span>
+            <p class="card-desc">Token de inicialização estático e configurável para a Web GUI do DSH, permitindo integração confiável em ambientes headless e servidores remotos.</p>
+            <div class="tags">
+              <span class="tag">Security</span>
+              <span class="tag">Self-Hosting</span>
+              <span class="tag">DSH Plugin</span>
+            </div>
+          </a>
+
+          <a href="https://github.com/mdalboni/dsh-turn-title" class="card" target="_blank" rel="noopener">
+            <div class="card-top">
+              <span class="card-title">dsh-turn-title</span>
+              <span class="card-arrow">↗</span>
+            </div>
+            <p class="card-desc">Geração automática de título semântico para as conversas após o primeiro turno de mensagens, com ação manual de atualização sob demanda.</p>
+            <div class="tags">
+              <span class="tag">LLM Ergonomics</span>
+              <span class="tag">DSH Plugin</span>
             </div>
           </a>
         </div>
       </section>
 
+      <!-- Stack Section -->
       <section>
-        <h2>Contato &amp; Perfis</h2>
-        <div class="contact-links">
-          <a href="https://github.com/mdalboni" class="btn" target="_blank" rel="noopener">
-            GitHub
+        <div class="section-title">03 / Stack &amp; Tecnologias</div>
+        <div class="skills-cluster">
+          <span class="skill-pill">Python</span>
+          <span class="skill-pill">Go</span>
+          <span class="skill-pill">PostgreSQL</span>
+          <span class="skill-pill">Redis</span>
+          <span class="skill-pill">Docker</span>
+          <span class="skill-pill">Linux</span>
+          <span class="skill-pill">Tailscale</span>
+          <span class="skill-pill">Reverse Proxy</span>
+          <span class="skill-pill">Distributed Architecture</span>
+          <span class="skill-pill">DeepSeek Harness</span>
+        </div>
+      </section>
+
+      <!-- Contact Section -->
+      <section>
+        <div class="section-title">04 / Contato</div>
+        <div class="links-grid">
+          <a href="https://github.com/mdalboni" class="btn-link" target="_blank" rel="noopener">
+            <span>🐙 GitHub</span>
           </a>
-          <a href="https://t.me/mdalboni" class="btn" target="_blank" rel="noopener">
-            Telegram
+          <a href="https://t.me/mdalboni" class="btn-link" target="_blank" rel="noopener">
+            <span>✈️ Telegram</span>
           </a>
-          <a href="mailto:dalboni.max@hotmail.com" class="btn">
-            E-mail
+          <a href="mailto:maxwell@dalboni.com.br" class="btn-link">
+            <span>✉️ E-mail</span>
           </a>
         </div>
       </section>
@@ -360,7 +519,7 @@
 
     <footer>
       <span>&copy; Maxwell M. Dalboni</span>
-      <a href="https://github.com/mdalboni/mdalboni.github.io" target="_blank" rel="noopener">Source no GitHub</a>
+      <span>Hosted on GitHub Pages • Zero build dependencies</span>
     </footer>
   </div>
 </body>

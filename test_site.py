@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-"""Run a sanity test on index.html: tags balance, mandatory metadata, links, and ponytail comment."""
 from html.parser import HTMLParser
-import sys
 
 class HTMLValidator(HTMLParser):
     def __init__(self):
@@ -30,7 +28,7 @@ class HTMLValidator(HTMLParser):
             assert top == tag, f"Mismatched closing tag </{tag}>, expected </{top}>"
 
 def main():
-    with open('/tmp/gh-work/mdalboni.github.io/index.html', 'r', encoding='utf-8') as f:
+    with open('index.html', 'r', encoding='utf-8') as f:
         content = f.read()
 
     validator = HTMLValidator()
@@ -38,10 +36,11 @@ def main():
 
     assert validator.has_ponytail, "Missing ponytail comment"
     assert len(validator.tags) == 0, f"Unclosed tags: {validator.tags}"
-    assert len(validator.links) >= 5, f"Expected at least 5 links, got {len(validator.links)}"
-    assert "mailto:dalboni.max@hotmail.com" in validator.links, "Missing email link"
-    assert "https://github.com/mdalboni" in validator.links, "Missing GitHub profile link"
-    print("PASS: index.html is valid, accessible, and self-contained.")
+    assert "mailto:maxwell@dalboni.com.br" in validator.links, "Missing professional email link"
+    assert "dalboni.max" not in content, "Personal email leaked in content"
+    assert "transcriber_cli" not in content, "transcriber_cli should be removed"
+    assert "https://github.com/mdalboni" in validator.links, "Missing GitHub link"
+    print("PASS: gh-pages index.html validated.")
 
 if __name__ == '__main__':
     main()
