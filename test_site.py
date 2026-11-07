@@ -37,10 +37,14 @@ def main():
     assert validator.has_ponytail, "Missing ponytail comment"
     assert len(validator.tags) == 0, f"Unclosed tags: {validator.tags}"
     assert "mailto:maxwell@dalboni.com.br" in validator.links, "Missing professional email link"
-    assert "dalboni.max" not in content, "Personal email leaked in content"
+    assert "dalboni.max" not in content, "Personal email leaked"
+    assert "lab.dalboni" not in content, "Internal lab subdomain leaked"
+    assert "homelab-mini" not in content, "Internal hostname leaked"
+    assert "Tailscale" not in content, "Internal VPN topology leaked"
     assert "transcriber_cli" not in content, "transcriber_cli should be removed"
+    assert "São Paulo" not in content, "Location should only be Brazil"
     assert "https://github.com/mdalboni" in validator.links, "Missing GitHub link"
-    print("PASS: gh-pages index.html validated.")
+    print("PASS: gh-pages index.html validated and secure.")
 
 if __name__ == '__main__':
     main()
