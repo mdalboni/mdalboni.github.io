@@ -1,46 +1,71 @@
 <!DOCTYPE html>
-<!-- ponytail: single-file static HTML/CSS. Max ceiling: personal portfolio. Upgrade path: SSG (Zola/Hugo) if blog posts or dynamic content needed. -->
-<html lang="pt-BR">
+<!-- ponytail: single-file multilingual Bento Grid (PT/EN/ES/ZH) with CSS-driven lang toggle. Max ceiling: 4 languages. Upgrade path: static site generator i18n (Zola/Hugo) if complex content or markdown blogs are added. -->
+<html lang="pt">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Maxwell M. Dalboni — Backend &amp; Platform Engineer</title>
+  <title>Maxwell M. Dalboni — Software Engineer</title>
   <meta name="description" content="Maxwell M. Dalboni - Senior Backend Engineer, Homelab enthusiast & DSH tooling developer.">
+  <meta name="referrer" content="strict-origin-when-cross-origin">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; frame-ancestors 'none'; base-uri 'none'; form-action 'none';">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>⚡</text></svg>">
+  
+  <script>
+    /* Kill FOUC: detect lang before initial render */
+    (function() {
+      var ALLOWED = ['pt', 'en', 'es', 'zh'];
+      var saved = null;
+      try { saved = localStorage.getItem('pref-lang'); } catch (e) {}
+      var initial = (saved && ALLOWED.indexOf(saved) !== -1) ? saved :
+        ((navigator.language && navigator.language.toLowerCase().startsWith('zh')) ? 'zh' :
+        ((navigator.language && navigator.language.toLowerCase().startsWith('es')) ? 'es' :
+        ((navigator.language && navigator.language.toLowerCase().startsWith('pt')) ? 'pt' : 'en')));
+      document.documentElement.lang = initial;
+    })();
+  </script>
+
   <style>
     :root {
       --bg: #07090e;
-      --surface: #0e131f;
-      --surface-elevated: #141b2d;
-      --border: rgba(255, 255, 255, 0.08);
-      --border-hover: rgba(56, 189, 248, 0.4);
-      --text: #f1f5f9;
+      --card-bg: rgba(15, 22, 35, 0.7);
+      --card-border: rgba(255, 255, 255, 0.08);
+      --card-hover-border: rgba(56, 189, 248, 0.35);
+      --card-hover-bg: rgba(20, 30, 48, 0.8);
+      --text: #f8fafc;
       --text-muted: #94a3b8;
-      --text-dim: #64748b;
+      --text-dim: #8492a6;
       --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.15);
+      --accent-glow: rgba(56, 189, 248, 0.12);
       --green: #10b981;
-      --green-glow: rgba(16, 185, 129, 0.2);
+      --green-glow: rgba(16, 185, 129, 0.15);
       --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Consolas, monospace;
-      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+      --card-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.06), 0 8px 24px -4px rgba(0, 0, 0, 0.4);
     }
 
     @media (prefers-color-scheme: light) {
       :root {
         --bg: #f8fafc;
-        --surface: #ffffff;
-        --surface-elevated: #f1f5f9;
-        --border: rgba(0, 0, 0, 0.08);
-        --border-hover: rgba(2, 132, 199, 0.5);
+        --card-bg: #ffffff;
+        --card-border: rgba(0, 0, 0, 0.1);
+        --card-hover-border: rgba(3, 105, 161, 0.4);
+        --card-hover-bg: #f8fafc;
         --text: #0f172a;
         --text-muted: #475569;
-        --text-dim: #94a3b8;
-        --accent: #0284c7;
-        --accent-glow: rgba(2, 132, 199, 0.1);
-        --green: #059669;
-        --green-glow: rgba(5, 150, 105, 0.15);
+        --text-dim: #64748b;
+        --accent: #0369a1;
+        --accent-glow: rgba(3, 105, 161, 0.08);
+        --green: #047857;
+        --green-glow: rgba(4, 120, 87, 0.1);
+        --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04), 0 6px 16px -2px rgba(0, 0, 0, 0.03);
       }
     }
+
+    /* Multilingual display */
+    html:not([lang="pt"]) .pt { display: none !important; }
+    html:not([lang="en"]) .en { display: none !important; }
+    html:not([lang="es"]) .es { display: none !important; }
+    html:not([lang="zh"]) .zh { display: none !important; }
 
     * {
       box-sizing: border-box;
@@ -48,9 +73,16 @@
       padding: 0;
     }
 
+    :focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+
     body {
       background-color: var(--bg);
-      background-image: radial-gradient(ellipse 90% 60% at 50% -15%, var(--accent-glow), transparent);
+      background-image: 
+        radial-gradient(ellipse 80% 50% at 50% -10%, var(--accent-glow), transparent),
+        radial-gradient(circle 400px at 100% 80%, rgba(16, 185, 129, 0.04), transparent);
       background-attachment: fixed;
       color: var(--text);
       font-family: var(--sans);
@@ -59,38 +91,93 @@
       padding: 3rem 1.5rem 5rem;
     }
 
-    .wrapper {
-      max-width: 760px;
+    .container {
+      max-width: 980px;
       margin: 0 auto;
     }
 
-    /* Header */
-    header {
-      margin-bottom: 3.5rem;
+    /* Bento Grid */
+    .bento-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.25rem;
     }
 
-    .top-meta {
+    .bento-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: var(--card-shadow);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+    }
+
+    .bento-card:hover {
+      border-color: var(--card-hover-border);
+    }
+
+    .span-3 { grid-column: span 3; }
+    .span-2 { grid-column: span 2; }
+    .span-1 { grid-column: span 1; }
+
+    /* Card Elements */
+    .card-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-dim);
+      margin-bottom: 0.85rem;
       display: flex;
       align-items: center;
+      gap: 0.5rem;
+    }
+
+    .card-label::after {
+      content: "";
+      flex: 1;
+      height: 1px;
+      background: var(--card-border);
+    }
+
+    /* Hero Card */
+    .hero-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1.25rem;
+      flex-wrap: wrap;
       gap: 0.75rem;
-      margin-bottom: 1.5rem;
+    }
+
+    .badges-group {
+      display: flex;
+      gap: 0.5rem;
+      align-items: center;
       flex-wrap: wrap;
     }
 
-    .badge {
+    .pill {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      padding: 0.35rem 0.75rem;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
       display: inline-flex;
       align-items: center;
       gap: 0.45rem;
-      padding: 0.25rem 0.75rem;
-      border-radius: 9999px;
-      font-size: 0.78rem;
-      font-family: var(--mono);
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
     }
 
-    .badge-dot {
+    .pill-dot {
       width: 7px;
       height: 7px;
       border-radius: 50%;
@@ -98,250 +185,260 @@
       box-shadow: 0 0 8px var(--green-glow);
     }
 
+    /* Lang Selector Switch */
+    .lang-switcher {
+      display: inline-flex;
+      align-items: center;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      border-radius: 9999px;
+      padding: 0.2rem 0.35rem;
+      gap: 0.15rem;
+      font-family: var(--mono);
+      font-size: 0.75rem;
+    }
+
+    .lang-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      font-family: inherit;
+      font-size: inherit;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 0.3rem 0.55rem;
+      min-height: 32px;
+      border-radius: 9999px;
+      transition: color 0.15s ease, background 0.15s ease;
+    }
+
+    .lang-btn:hover {
+      color: var(--text);
+    }
+
+    .lang-btn.active {
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+    }
+
+    .lang-sep {
+      color: var(--card-border);
+      user-select: none;
+    }
+
     h1 {
-      font-size: 2.5rem;
+      font-size: 2.4rem;
       font-weight: 800;
       letter-spacing: -0.035em;
       line-height: 1.15;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.75rem;
       background: linear-gradient(180deg, var(--text) 30%, var(--text-muted) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
 
-    .role {
-      font-size: 1.15rem;
-      font-weight: 500;
-      color: var(--accent);
-      margin-bottom: 1rem;
-      letter-spacing: -0.01em;
-    }
-
-    .intro {
+    .hero-bio {
       font-size: 1.05rem;
       color: var(--text-muted);
-      max-width: 650px;
+      max-width: 780px;
+      line-height: 1.6;
     }
 
-    /* Sections */
-    section {
-      margin-bottom: 3.5rem;
-    }
-
-    .section-title {
-      font-size: 0.85rem;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-      color: var(--text-dim);
-      font-family: var(--mono);
-      margin-bottom: 1.25rem;
-      display: flex;
-      align-items: center;
-      gap: 0.75rem;
-    }
-
-    .section-title::after {
-      content: "";
-      flex: 1;
-      height: 1px;
-      background: var(--border);
-    }
-
-    /* Homelab Showcase Card */
-    .homelab-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 1.5rem;
-      position: relative;
-      overflow: hidden;
-      margin-bottom: 1rem;
-    }
-
-    .homelab-box::before {
-      content: "";
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, var(--accent), transparent);
-    }
-
-    .homelab-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      margin-bottom: 0.75rem;
-      flex-wrap: wrap;
-      gap: 0.5rem;
-    }
-
-    .homelab-title {
-      font-size: 1.1rem;
-      font-weight: 600;
+    /* Titles and Headers */
+    .card-title {
+      font-size: 1.15rem;
+      font-weight: 700;
       color: var(--text);
       display: flex;
       align-items: center;
       gap: 0.5rem;
     }
 
-    .homelab-desc {
-      font-size: 0.95rem;
-      color: var(--text-muted);
-      margin-bottom: 1.15rem;
-      line-height: 1.55;
-    }
-
-    .homelab-specs {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 0.75rem;
-    }
-
-    .spec-item {
-      background: var(--surface-elevated);
-      border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 0.65rem 0.85rem;
-    }
-
-    .spec-label {
-      font-size: 0.72rem;
-      font-family: var(--mono);
-      color: var(--text-dim);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-      margin-bottom: 0.2rem;
-    }
-
-    .spec-val {
+    .card-desc {
       font-size: 0.88rem;
-      font-weight: 500;
-      color: var(--text);
+      color: var(--text-muted);
+      margin-top: 0.25rem;
+      margin-bottom: 0.85rem;
+      line-height: 1.45;
     }
 
-    /* Projects Grid */
-    .projects-grid {
+    /* DSH Suite Card */
+    .plugins-grid {
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 1rem;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 0.85rem;
     }
 
-    .card {
-      background: var(--surface);
-      border: 1px solid var(--border);
+    .plugin-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
       border-radius: 10px;
-      padding: 1.25rem 1.4rem;
+      padding: 1rem;
       text-decoration: none;
       color: inherit;
-      display: block;
-      transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
     }
 
-    .card:hover {
-      border-color: var(--border-hover);
-      background: var(--surface-elevated);
+    .plugin-item:hover {
+      border-color: var(--card-hover-border);
+      background: var(--card-hover-bg);
       transform: translateY(-2px);
     }
 
-    .card-top {
+    .plugin-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.4rem;
     }
 
-    .card-title {
+    .plugin-name {
       font-family: var(--mono);
-      font-size: 1rem;
+      font-size: 0.92rem;
       font-weight: 600;
       color: var(--accent);
     }
 
-    .card-arrow {
+    .plugin-arrow {
+      font-size: 0.85rem;
       color: var(--text-dim);
-      font-size: 0.9rem;
       transition: transform 0.15s ease, color 0.15s ease;
     }
 
-    .card:hover .card-arrow {
+    .plugin-item:hover .plugin-arrow {
       color: var(--accent);
       transform: translate(2px, -2px);
     }
 
-    .card-desc {
-      font-size: 0.92rem;
+    .plugin-text {
+      font-size: 0.82rem;
       color: var(--text-muted);
-      margin-bottom: 0.9rem;
-      line-height: 1.5;
+      line-height: 1.45;
+      margin-bottom: 0.65rem;
     }
 
-    .tags {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.4rem;
-    }
-
-    .tag {
+    .plugin-tag {
       font-family: var(--mono);
-      font-size: 0.72rem;
+      font-size: 0.75rem;
       padding: 0.2rem 0.5rem;
       border-radius: 4px;
-      background: var(--surface-elevated);
-      border: 1px solid var(--border);
-      color: var(--text-muted);
+      background: rgba(56, 189, 248, 0.08);
+      color: var(--accent);
+      align-self: flex-start;
     }
 
-    /* Skills Pill Grid */
-    .skills-cluster {
+    /* Homelab Card */
+    .homelab-spec-list {
       display: flex;
-      flex-wrap: wrap;
+      flex-direction: column;
+      gap: 0.65rem;
+      flex: 1;
+      justify-content: space-between;
+    }
+
+    .spec-row {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 0.65rem 0.85rem;
+    }
+
+    .spec-row-label {
+      font-family: var(--mono);
+      font-size: 0.75rem;
+      color: var(--text-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .spec-row-val {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+      margin-top: 0.1rem;
+    }
+
+    /* Domains Grid */
+    .domains-list {
+      display: grid;
+      grid-template-columns: 1fr;
       gap: 0.5rem;
     }
 
-    .skill-pill {
-      font-family: var(--mono);
-      font-size: 0.85rem;
-      padding: 0.4rem 0.85rem;
-      border-radius: 6px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--text);
-    }
-
-    /* Links */
-    .links-grid {
+    .domain-badge {
       display: flex;
-      flex-wrap: wrap;
-      gap: 0.75rem;
-    }
-
-    .btn-link {
-      display: inline-flex;
       align-items: center;
       gap: 0.5rem;
-      padding: 0.65rem 1.15rem;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--card-border);
       border-radius: 8px;
-      background: var(--surface);
-      border: 1px solid var(--border);
+      padding: 0.55rem 0.85rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--text);
+    }
+
+    .domain-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent);
+    }
+
+    /* Stack Card */
+    .stack-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+
+    .stack-pill {
+      font-family: var(--mono);
+      font-size: 0.8rem;
+      padding: 0.35rem 0.65rem;
+      border-radius: 6px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+    }
+
+    /* Connect Card */
+    .connect-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.65rem;
+    }
+
+    .btn-connect {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.65rem 1rem;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--card-border);
       color: var(--text);
       text-decoration: none;
-      font-size: 0.9rem;
+      font-size: 0.88rem;
       font-weight: 500;
       transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
     }
 
-    .btn-link:hover {
+    .btn-connect:hover {
       border-color: var(--accent);
       color: var(--accent);
-      background: var(--surface-elevated);
+      background: var(--card-hover-bg);
     }
 
     /* Footer */
     footer {
-      border-top: 1px solid var(--border);
-      padding-top: 2rem;
+      margin-top: 3.5rem;
+      border-top: 1px solid var(--card-border);
+      padding-top: 1.75rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -351,164 +448,335 @@
       color: var(--text-dim);
     }
 
-    footer a {
-      color: var(--text-muted);
-      text-decoration: none;
+    /* Responsive */
+    @media (max-width: 960px) and (min-width: 641px) {
+      .bento-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      .span-3, .span-2 {
+        grid-column: span 2;
+      }
+      .span-1 {
+        grid-column: span 1;
+      }
     }
 
-    footer a:hover {
-      color: var(--accent);
+    @media (max-width: 640px) {
+      .bento-grid {
+        grid-template-columns: 1fr;
+      }
+      .span-3, .span-2, .span-1 {
+        grid-column: span 1;
+      }
+      .plugins-grid {
+        grid-template-columns: 1fr;
+      }
+      body {
+        padding: 2rem 1rem 3rem;
+      }
+      .hero-top {
+        flex-direction: column;
+        align-items: flex-start;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="wrapper">
-    <header>
-      <div class="top-meta">
-        <div class="badge">
-          <span class="badge-dot"></span>
-          <span>Software Engineer</span>
-        </div>
-        <div class="badge">
-          <span>Brazil</span>
-        </div>
-        <div class="badge">
-          <span>UTC-3</span>
-        </div>
-      </div>
-      <h1>Maxwell M. Dalboni</h1>
-      <p class="role">Senior Backend &amp; Platform Engineer</p>
-      <p class="intro">
-        Engenheiro focado em arquitetura de backend, sistemas resilientes, self-hosting e tooling para IA. Criador de plugins e extensões para o ecossistema DeepSeek Harness.
-      </p>
-    </header>
-
-    <main>
-      <!-- Homelab Section -->
-      <section>
-        <div class="section-title">01 / Homelab &amp; Infraestrutura</div>
-        <div class="homelab-box">
-          <div class="homelab-header">
-            <span class="homelab-title">🖥️ Homelab &amp; Infraestrutura Pessoal</span>
-          </div>
-          <p class="homelab-desc">
-            Laboratório local bare-metal dedicado a experimentação arquitetural, auto-hospedagem de serviços, bancos de dados e prototipagem de pipelines com isolamento e automação.
-          </p>
-          <div class="homelab-specs">
-            <div class="spec-item">
-              <div class="spec-label">Ambiente</div>
-              <div class="spec-val">Linux Bare-Metal • Kernel 6.x</div>
+  <div class="container">
+    <div class="bento-grid">
+      
+      <!-- Bento 1: Hero Profile (Span 3) -->
+      <section class="bento-card span-3">
+        <div class="hero-top">
+          <div class="card-label">00 / PROFILE</div>
+          <div class="badges-group">
+            <div class="pill">
+              <span class="pill-dot"></span>
+              <span class="pt">Engenheiro de Software</span>
+              <span class="en">Software Engineer</span>
+              <span class="es">Ingeniero de Software</span>
+              <span class="zh">软件工程师</span>
             </div>
-            <div class="spec-item">
-              <div class="spec-label">Workloads</div>
-              <div class="spec-val">Containers, microserviços e bancos locais</div>
+            <div class="pill">
+              <span>Brazil</span>
             </div>
-            <div class="spec-item">
-              <div class="spec-label">Rede &amp; Borda</div>
-              <div class="spec-val">Reverse proxy local • TLS automatizado</div>
+            <div class="pill">
+              <span>UTC-3</span>
             </div>
-            <div class="spec-item">
-              <div class="spec-label">Operação</div>
-              <div class="spec-val">Auto-hospedagem • Backups automatizados</div>
+            <div class="lang-switcher" role="group" aria-label="Language selector">
+              <button type="button" class="lang-btn" id="btn-pt" data-lang="pt" aria-label="Português">PT</button>
+              <span class="lang-sep" aria-hidden="true">/</span>
+              <button type="button" class="lang-btn" id="btn-en" data-lang="en" aria-label="English">EN</button>
+              <span class="lang-sep" aria-hidden="true">/</span>
+              <button type="button" class="lang-btn" id="btn-es" data-lang="es" aria-label="Español">ES</button>
+              <span class="lang-sep" aria-hidden="true">/</span>
+              <button type="button" class="lang-btn" id="btn-zh" data-lang="zh" aria-label="中文">中文</button>
             </div>
           </div>
         </div>
+        <h1>Maxwell M. Dalboni</h1>
+        <p class="hero-bio pt">
+          Engenheiro de software sênior focado em sistemas distribuídos resilientes, arquitetura de backend, infraestrutura de laboratório e ergonomia de ferramentas para agentes de IA. Desenvolvedor ativo do ecossistema DeepSeek Harness.
+        </p>
+        <p class="hero-bio en">
+          Senior software engineer focused on resilient distributed systems, backend architecture, homelab infrastructure, and AI agent tooling ergonomics. Active contributor to the DeepSeek Harness ecosystem.
+        </p>
+        <p class="hero-bio es">
+          Ingeniero de software senior enfocado en sistemas distribuidos resilientes, arquitectura de backend, infraestructura de laboratorio y ergonomía de herramientas para agentes de IA. Desarrollador activo en el ecosistema DeepSeek Harness.
+        </p>
+        <p class="hero-bio zh">
+          高级软件工程师，专注于高弹性分布式系统、后端架构、本地实验室基础设施以及 AI Agent 开发者工具体验。DeepSeek Harness (DSH) 生态活跃贡献者。
+        </p>
       </section>
 
-      <!-- Projects Section -->
-      <section>
-        <div class="section-title">02 / DeepSeek Harness Tooling &amp; Open Source</div>
-        <div class="projects-grid">
-          <a href="https://github.com/mdalboni/dsh-spotlight" class="card" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="card-title">dsh-spotlight</span>
-              <span class="card-arrow">↗</span>
-            </div>
-            <p class="card-desc">Diálogo global de busca estilo Spotlight / IntelliJ para navegar instantaneamente por sessões, arquivos e chats do DSH.</p>
-            <div class="tags">
-              <span class="tag">TypeScript</span>
-              <span class="tag">DSH Plugin</span>
-              <span class="tag">Productivity</span>
-            </div>
-          </a>
+      <!-- Bento 2: DSH Tooling Suite (Span 2) -->
+      <section class="bento-card span-2">
+        <div>
+          <div class="card-label">01 / OPEN SOURCE &amp; AI TOOLING</div>
+          <h2 class="card-title">⚡ DeepSeek Harness Tooling</h2>
+          <p class="card-desc pt">Suíte de extensões para produtividade, navegação e controle de ambiente no DSH.</p>
+          <p class="card-desc en">Extension suite for productivity, navigation, and runtime operations in DSH.</p>
+          <p class="card-desc es">Suite de extensiones para productividad, navegación y control de entorno en DSH.</p>
+          <p class="card-desc zh">用于提升 DeepSeek Harness 生产力、会话导航与运行环境控制的扩展套件。</p>
+          <div class="plugins-grid">
+            <a href="https://github.com/mdalboni/dsh-spotlight" class="plugin-item" target="_blank" rel="noopener noreferrer">
+              <div>
+                <div class="plugin-header">
+                  <span class="plugin-name">dsh-spotlight</span>
+                  <span class="plugin-arrow" aria-hidden="true">↗</span>
+                </div>
+                <p class="plugin-text pt">Busca global estilo Spotlight / IntelliJ para alternar instantaneamente entre sessões, arquivos e chats.</p>
+                <p class="plugin-text en">Spotlight / IntelliJ-style global search to switch instantly between sessions, files, and chats.</p>
+                <p class="plugin-text es">Búsqueda global estilo Spotlight / IntelliJ para alternar instantáneamente entre sesiones, archivos y chats.</p>
+                <p class="plugin-text zh">Spotlight / IntelliJ 风格的全局模糊搜索，可在会话、文件与聊天之间无缝切换。</p>
+              </div>
+              <span class="plugin-tag">TypeScript • Productivity</span>
+            </a>
 
-          <a href="https://github.com/mdalboni/dsh-mobile" class="card" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="card-title">dsh-mobile</span>
-              <span class="card-arrow">↗</span>
-            </div>
-            <p class="card-desc">Melhorias ergonômicas mobile para DSH: viewport lock, overscroll containment, ajuste para teclado virtual e recolhimento inteligente de sidebar.</p>
-            <div class="tags">
-              <span class="tag">JavaScript</span>
-              <span class="tag">Mobile UX</span>
-              <span class="tag">DSH Plugin</span>
-            </div>
-          </a>
+            <a href="https://github.com/mdalboni/dsh-mobile" class="plugin-item" target="_blank" rel="noopener noreferrer">
+              <div>
+                <div class="plugin-header">
+                  <span class="plugin-name">dsh-mobile</span>
+                  <span class="plugin-arrow" aria-hidden="true">↗</span>
+                </div>
+                <p class="plugin-text pt">Viewport lock, overscroll containment e retração automática da barra lateral para uso mobile confortável.</p>
+                <p class="plugin-text en">Viewport lock, overscroll containment, and smart sidebar auto-retraction for ergonomic mobile use.</p>
+                <p class="plugin-text es">Bloqueo de viewport, contención de overscroll y retracción inteligente de barra lateral para uso móvil.</p>
+                <p class="plugin-text zh">专为移动端优化的视口锁定、滚动溢出遏制与侧边栏智能自动收起。</p>
+              </div>
+              <span class="plugin-tag">JavaScript • Mobile UX</span>
+            </a>
 
-          <a href="https://github.com/mdalboni/dsh-static-token" class="card" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="card-title">dsh-static-token</span>
-              <span class="card-arrow">↗</span>
-            </div>
-            <p class="card-desc">Token de inicialização estático e configurável para a Web GUI do DSH, permitindo integração estável em ambientes headless e servidores remotos.</p>
-            <div class="tags">
-              <span class="tag">Security</span>
-              <span class="tag">Self-Hosting</span>
-              <span class="tag">DSH Plugin</span>
-            </div>
-          </a>
+            <a href="https://github.com/mdalboni/dsh-static-token" class="plugin-item" target="_blank" rel="noopener noreferrer">
+              <div>
+                <div class="plugin-header">
+                  <span class="plugin-name">dsh-static-token</span>
+                  <span class="plugin-arrow" aria-hidden="true">↗</span>
+                </div>
+                <p class="plugin-text pt">Token estático configurável para autenticação headless e inicializações estáveis em servidores remotos.</p>
+                <p class="plugin-text en">Configurable static launch token for headless authentication and reliable remote server setups.</p>
+                <p class="plugin-text es">Token estático configurable para autenticación headless e inicios estables en servidores remotos.</p>
+                <p class="plugin-text zh">可配置的静态启动令牌，适用于无头模式认证与远程服务器稳定部署。</p>
+              </div>
+              <span class="plugin-tag">Security • Auth</span>
+            </a>
 
-          <a href="https://github.com/mdalboni/dsh-turn-title" class="card" target="_blank" rel="noopener">
-            <div class="card-top">
-              <span class="card-title">dsh-turn-title</span>
-              <span class="card-arrow">↗</span>
-            </div>
-            <p class="card-desc">Geração automática de título semântico para as conversas após o primeiro turno de mensagens, com ação manual de atualização sob demanda.</p>
-            <div class="tags">
-              <span class="tag">LLM Ergonomics</span>
-              <span class="tag">DSH Plugin</span>
-            </div>
-          </a>
+            <a href="https://github.com/mdalboni/dsh-turn-title" class="plugin-item" target="_blank" rel="noopener noreferrer">
+              <div>
+                <div class="plugin-header">
+                  <span class="plugin-name">dsh-turn-title</span>
+                  <span class="plugin-arrow" aria-hidden="true">↗</span>
+                </div>
+                <p class="plugin-text pt">Titulação semântica automática para conversas após a primeira interação, com botão de refresh manual.</p>
+                <p class="plugin-text en">Automatic semantic conversation titling after initial assistant exchanges, with manual refresh action.</p>
+                <p class="plugin-text es">Titulación semántica automática de conversaciones tras la primera interacción, con botón de actualización.</p>
+                <p class="plugin-text zh">在首轮交互后自动为对话生成语义标题，并提供手动一键刷新按钮。</p>
+              </div>
+              <span class="plugin-tag">LLM Ergonomics</span>
+            </a>
+          </div>
         </div>
       </section>
 
-      <!-- Stack Section -->
-      <section>
-        <div class="section-title">03 / Stack &amp; Tecnologias</div>
-        <div class="skills-cluster">
-          <span class="skill-pill">Python</span>
-          <span class="skill-pill">Go</span>
-          <span class="skill-pill">PostgreSQL</span>
-          <span class="skill-pill">Redis</span>
-          <span class="skill-pill">Docker</span>
-          <span class="skill-pill">Linux</span>
-          <span class="skill-pill">Reverse Proxy</span>
-          <span class="skill-pill">Distributed Architecture</span>
-          <span class="skill-pill">DeepSeek Harness</span>
+      <!-- Bento 3: Homelab & Platform (Span 1) -->
+      <section class="bento-card span-1">
+        <div style="display: flex; flex-direction: column; height: 100%;">
+          <div class="card-label">02 / <span class="pt">PLATAFORMA</span><span class="en">PLATFORM</span><span class="es">PLATAFORMA</span><span class="zh">平台架构</span></div>
+          <h2 class="card-title">🖥️ Homelab</h2>
+          <p class="card-desc pt">Laboratório bare-metal para prototipagem de microsserviços e resiliência.</p>
+          <p class="card-desc en">Bare-metal lab for microservices prototyping and resilience testing.</p>
+          <p class="card-desc es">Laboratorio bare-metal para creación de prototipos de microservicios y resiliencia.</p>
+          <p class="card-desc zh">用于微服务原型验证与系统弹性测试的本地物理机实验室。</p>
+          <div class="homelab-spec-list">
+            <div class="spec-row">
+              <div class="spec-row-label pt">Ambiente</div>
+              <div class="spec-row-label en">Environment</div>
+              <div class="spec-row-label es">Entorno</div>
+              <div class="spec-row-label zh">运行环境</div>
+              <div class="spec-row-val">Linux Bare-Metal • High Availability</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-row-label">Workloads</div>
+              <div class="spec-row-val pt">Containers &amp; Bancos Locais</div>
+              <div class="spec-row-val en">Containers &amp; Local DBs</div>
+              <div class="spec-row-val es">Contenedores y Bases Locales</div>
+              <div class="spec-row-val zh">容器化服务与本地数据库</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-row-label pt">Borda</div>
+              <div class="spec-row-label en">Edge</div>
+              <div class="spec-row-label es">Borde</div>
+              <div class="spec-row-label zh">边缘网络</div>
+              <div class="spec-row-val">Automated Edge • Reverse Proxy</div>
+            </div>
+            <div class="spec-row">
+              <div class="spec-row-label pt">Prática</div>
+              <div class="spec-row-label en">Practice</div>
+              <div class="spec-row-label es">Práctica</div>
+              <div class="spec-row-label zh">运维实践</div>
+              <div class="spec-row-val">Self-Hosting &amp; Backups</div>
+            </div>
+          </div>
         </div>
       </section>
 
-      <!-- Contact Section -->
-      <section>
-        <div class="section-title">04 / Contato</div>
-        <div class="links-grid">
-          <a href="https://github.com/mdalboni" class="btn-link" target="_blank" rel="noopener">
-            <span>🐙 GitHub</span>
-          </a>
-          <a href="https://t.me/mdalboni" class="btn-link" target="_blank" rel="noopener">
-            <span>✈️ Telegram</span>
-          </a>
-          <a href="mailto:maxwell@dalboni.com.br" class="btn-link">
-            <span>✉️ E-mail</span>
-          </a>
+      <!-- Bento 4: Industry Domains (Span 1) -->
+      <section class="bento-card span-1">
+        <div>
+          <div class="card-label">03 / <span class="pt">DOMÍNIOS</span><span class="en">DOMAINS</span><span class="es">DOMINIOS</span><span class="zh">业务领域</span></div>
+          <h2 class="card-title">🏛️ <span class="pt">Indústrias</span><span class="en">Industries</span><span class="es">Industrias</span><span class="zh">领域经验</span></h2>
+          <p class="card-desc pt">Sistemas críticos e engenharia aplicada em produção.</p>
+          <p class="card-desc en">Production systems across high-stakes domains.</p>
+          <p class="card-desc es">Sistemas de producción en sectores críticos.</p>
+          <p class="card-desc zh">在关键生产环境中交付与运维的核心业务领域。</p>
+          <div class="domains-list">
+            <div class="domain-badge">
+              <span class="domain-dot"></span>
+              <span>Fintech</span>
+            </div>
+            <div class="domain-badge">
+              <span class="domain-dot"></span>
+              <span class="pt">Segurança da Informação</span>
+              <span class="en">Cybersecurity</span>
+              <span class="es">Ciberseguridad</span>
+              <span class="zh">网络与信息安全</span>
+            </div>
+            <div class="domain-badge">
+              <span class="domain-dot"></span>
+              <span class="pt">Bancos &amp; Pagamentos</span>
+              <span class="en">Banking &amp; Payments</span>
+              <span class="es">Banca y Pagos</span>
+              <span class="zh">银行与支付系统</span>
+            </div>
+            <div class="domain-badge">
+              <span class="domain-dot"></span>
+              <span class="pt">Saúde (HealthTech)</span>
+              <span class="en">Healthcare &amp; HealthTech</span>
+              <span class="es">Salud (HealthTech)</span>
+              <span class="zh">医疗科技 HealthTech</span>
+            </div>
+            <div class="domain-badge">
+              <span class="domain-dot"></span>
+              <span class="pt">Renderização 3D</span>
+              <span class="en">3D Rendering Systems</span>
+              <span class="es">Renderizado 3D</span>
+              <span class="zh">3D 渲染与图形管线</span>
+            </div>
+            <div class="domain-badge">
+              <span class="domain-dot"></span>
+              <span class="pt">IA &amp; Agentes Autônomos</span>
+              <span class="en">AI &amp; Autonomous Agents</span>
+              <span class="es">IA y Agentes Autónomos</span>
+              <span class="zh">人工智能与自主 Agent</span>
+            </div>
+          </div>
         </div>
       </section>
-    </main>
+
+      <!-- Bento 5: Core Stack (Span 1) -->
+      <section class="bento-card span-1">
+        <div>
+          <div class="card-label">04 / <span class="pt">STACK TÉCNICA</span><span class="en">TECH STACK</span><span class="es">STACK TÉCNICO</span><span class="zh">技术栈</span></div>
+          <h2 class="card-title">🛠️ <span class="pt">Especialidades</span><span class="en">Core Stack</span><span class="es">Especialidades</span><span class="zh">核心技术栈</span></h2>
+          <p class="card-desc pt">Ferramental prático para backends de alto rendimento.</p>
+          <p class="card-desc en">Practical tooling for resilient, high-throughput systems.</p>
+          <p class="card-desc es">Herramientas prácticas para sistemas resilientes de alto rendimiento.</p>
+          <p class="card-desc zh">构建高吞吐、高弹性后端系统的工程技术栈。</p>
+          <div class="stack-tags">
+            <span class="stack-pill">Python</span>
+            <span class="stack-pill">Go</span>
+            <span class="stack-pill">PostgreSQL</span>
+            <span class="stack-pill">Redis</span>
+            <span class="stack-pill">Docker</span>
+            <span class="stack-pill">Linux</span>
+            <span class="stack-pill">gRPC / REST</span>
+            <span class="stack-pill">Distributed Architecture</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- Bento 6: Connect & Links (Span 1) -->
+      <section class="bento-card span-1">
+        <div>
+          <div class="card-label">05 / <span class="pt">CONTATO</span><span class="en">CONNECT</span><span class="es">CONTACTO</span><span class="zh">联系方式</span></div>
+          <h2 class="card-title">📬 <span class="pt">Canais</span><span class="en">Channels</span><span class="es">Canales</span><span class="zh">直达渠道</span></h2>
+          <p class="card-desc pt">Troca de ideias técnicas e projetos.</p>
+          <p class="card-desc en">Technical discussions &amp; projects.</p>
+          <p class="card-desc es">Discusiones técnicas y proyectos.</p>
+          <p class="card-desc zh">技术交流、开源协作与项目探讨。</p>
+          <div class="connect-stack">
+            <a href="https://github.com/mdalboni" class="btn-connect" target="_blank" rel="noopener noreferrer">
+              🐙 GitHub
+            </a>
+            <a href="https://t.me/mdalboni" class="btn-connect" target="_blank" rel="noopener noreferrer">
+              ✈️ Telegram
+            </a>
+            <a href="#" id="email-link" class="btn-connect" title="E-mail">
+              ✉️ <span class="pt">E-mail</span><span class="en">Email</span><span class="es">Correo</span><span class="zh">邮件</span>
+            </a>
+          </div>
+        </div>
+      </section>
+
+    </div>
 
     <footer>
       <span>&copy; Maxwell M. Dalboni</span>
-      <span>Hosted on GitHub Pages • Zero build dependencies</span>
     </footer>
   </div>
+
+  <script>
+    /* Safe multilingual switcher with strict allowlist and eventListeners */
+    var ALLOWED_LANGS = ['pt', 'en', 'es', 'zh'];
+
+    function applyLang(lang) {
+      if (ALLOWED_LANGS.indexOf(lang) === -1) lang = 'pt';
+      document.documentElement.lang = lang;
+      try { localStorage.setItem('pref-lang', lang); } catch (e) {}
+      document.querySelectorAll('.lang-btn').forEach(function(btn) {
+        var match = btn.getAttribute('data-lang') === lang;
+        btn.classList.toggle('active', match);
+        btn.setAttribute('aria-pressed', match ? 'true' : 'false');
+      });
+    }
+
+    document.querySelectorAll('.lang-btn').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        applyLang(this.getAttribute('data-lang'));
+      });
+    });
+
+    applyLang(document.documentElement.lang || 'pt');
+
+    /* Bot-safe email link hydration (prevents scraping) */
+    var el = document.getElementById('email-link');
+    if (el) {
+      var u = 'maxwell', d = 'dalboni.com.br';
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        window.location.href = 'mailto:' + u + '@' + d;
+      });
+    }
+  </script>
 </body>
 </html>
