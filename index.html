@@ -186,16 +186,6 @@
       gap: 0.5rem;
     }
 
-    .homelab-host {
-      font-family: var(--mono);
-      font-size: 0.8rem;
-      color: var(--accent);
-      background: var(--surface-elevated);
-      padding: 0.2rem 0.5rem;
-      border-radius: 4px;
-      border: 1px solid var(--border);
-    }
-
     .homelab-desc {
       font-size: 0.95rem;
       color: var(--text-muted);
@@ -377,7 +367,7 @@
       <div class="top-meta">
         <div class="badge">
           <span class="badge-dot"></span>
-          <span>homelab: online</span>
+          <span>Software Engineer</span>
         </div>
         <div class="badge">
           <span>Brazil</span>
@@ -389,7 +379,7 @@
       <h1>Maxwell M. Dalboni</h1>
       <p class="role">Senior Backend &amp; Platform Engineer</p>
       <p class="intro">
-        Engenheiro focado em arquitetura de backend, sistemas resilientes, self-hosting e tooling para IA. Criador de plugins e infraestrutura para o ecossistema DeepSeek Harness.
+        Engenheiro focado em arquitetura de backend, sistemas resilientes, self-hosting e tooling para IA. Criador de plugins e extensões para o ecossistema DeepSeek Harness.
       </p>
     </header>
 
@@ -399,28 +389,27 @@
         <div class="section-title">01 / Homelab &amp; Infraestrutura</div>
         <div class="homelab-box">
           <div class="homelab-header">
-            <span class="homelab-title">🖥️ Private Homelab Cluster</span>
-            <span class="homelab-host">lab.dalboni.com.br</span>
+            <span class="homelab-title">🖥️ Homelab &amp; Infraestrutura Pessoal</span>
           </div>
           <p class="homelab-desc">
-            Ambiente bare-metal local dedicado a auto-hospedagem de serviços críticos, orquestração de agentes de IA, automação e desenvolvimento. Todo o tráfego externo é roteado com TLS automatizado e malha privada segura.
+            Laboratório local bare-metal dedicado a experimentação arquitetural, auto-hospedagem de serviços, bancos de dados e prototipagem de pipelines com isolamento e automação.
           </p>
           <div class="homelab-specs">
             <div class="spec-item">
-              <div class="spec-label">Hardware &amp; OS</div>
-              <div class="spec-val">Mini-PC x86_64 • Linux Kernel 6.8+</div>
+              <div class="spec-label">Ambiente</div>
+              <div class="spec-val">Linux Bare-Metal • Kernel 6.x</div>
             </div>
             <div class="spec-item">
               <div class="spec-label">Workloads</div>
-              <div class="spec-val">DeepSeek Harness, Docker, Databases</div>
+              <div class="spec-val">Containers, microserviços e bancos locais</div>
             </div>
             <div class="spec-item">
-              <div class="spec-label">Rede &amp; Segurança</div>
-              <div class="spec-val">Tailscale mesh • Reverse Proxy • SSL</div>
+              <div class="spec-label">Rede &amp; Borda</div>
+              <div class="spec-val">Reverse proxy local • TLS automatizado</div>
             </div>
             <div class="spec-item">
               <div class="spec-label">Operação</div>
-              <div class="spec-val">24/7 self-hosted • Backups locais</div>
+              <div class="spec-val">Auto-hospedagem • Backups automatizados</div>
             </div>
           </div>
         </div>
@@ -461,7 +450,7 @@
               <span class="card-title">dsh-static-token</span>
               <span class="card-arrow">↗</span>
             </div>
-            <p class="card-desc">Token de inicialização estático e configurável para a Web GUI do DSH, permitindo integração confiável em ambientes headless e servidores remotos.</p>
+            <p class="card-desc">Token de inicialização estático e configurável para a Web GUI do DSH, permitindo integração estável em ambientes headless e servidores remotos.</p>
             <div class="tags">
               <span class="tag">Security</span>
               <span class="tag">Self-Hosting</span>
@@ -493,7 +482,6 @@
           <span class="skill-pill">Redis</span>
           <span class="skill-pill">Docker</span>
           <span class="skill-pill">Linux</span>
-          <span class="skill-pill">Tailscale</span>
           <span class="skill-pill">Reverse Proxy</span>
           <span class="skill-pill">Distributed Architecture</span>
           <span class="skill-pill">DeepSeek Harness</span>
