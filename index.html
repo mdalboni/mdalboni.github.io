@@ -1,1 +1,367 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="./favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="Web site created using create-react-app"/><link rel="apple-touch-icon" href="./logo192.png"/><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/codemirror@5.61.0/lib/codemirror.min.css"><script src="https://cdn.jsdelivr.net/npm/codemirror@5.61.0/addon/runmode/runmode-standalone.min.js"></script><script src="https://cdn.jsdelivr.net/npm/codemirror@5.61.0/mode/python/python.min.js"></script><link rel="manifest" href="./manifest.json"/><title>MDalboni - Software Engineer</title><script defer="defer" src="./static/js/main.ea138c0a.js"></script><link href="./static/css/main.c788f272.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+<!DOCTYPE html>
+<!-- ponytail: single-file static HTML/CSS. Max ceiling: personal portfolio/resume. Upgrade path: add static generator (Zola/Hugo) if multi-page blog is needed. -->
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maxwell M. Dalboni | Software Engineer</title>
+  <meta name="description" content="Maxwell M. Dalboni - Senior Backend & AI Tooling Engineer. Python, Go, Distributed Systems e ecossistema DeepSeek Harness.">
+  <meta name="theme-color" content="#0f172a" media="(prefers-color-scheme: dark)">
+  <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+  <style>
+    :root {
+      --bg: #0b0f19;
+      --card-bg: #111827;
+      --card-border: #1f2937;
+      --card-hover: #1e293b;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --primary: #38bdf8;
+      --primary-hover: #7dd3fc;
+      --accent: #10b981;
+      --tag-bg: #1e293b;
+      --tag-text: #93c5fd;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f8fafc;
+        --card-bg: #ffffff;
+        --card-border: #e2e8f0;
+        --card-hover: #f1f5f9;
+        --text: #0f172a;
+        --text-muted: #64748b;
+        --primary: #0284c7;
+        --primary-hover: #0369a1;
+        --accent: #059669;
+        --tag-bg: #e0f2fe;
+        --tag-text: #0369a1;
+      }
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      padding: 2.5rem 1.25rem 4rem;
+    }
+
+    .container {
+      max-width: 720px;
+      margin: 0 auto;
+    }
+
+    header {
+      margin-bottom: 2.5rem;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 1.75rem;
+    }
+
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.825rem;
+      color: var(--text-muted);
+      background: var(--tag-bg);
+      padding: 0.25rem 0.65rem;
+      border-radius: 9999px;
+      margin-bottom: 1rem;
+      font-family: var(--font-mono);
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background-color: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      font-weight: 700;
+      letter-spacing: -0.025em;
+      line-height: 1.2;
+      margin-bottom: 0.35rem;
+    }
+
+    .subtitle {
+      font-size: 1.15rem;
+      color: var(--primary);
+      font-weight: 500;
+      margin-bottom: 0.85rem;
+    }
+
+    .bio {
+      color: var(--text-muted);
+      font-size: 1rem;
+      max-width: 640px;
+    }
+
+    section {
+      margin-bottom: 2.75rem;
+    }
+
+    h2 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: -0.015em;
+      margin-bottom: 1.25rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      border-left: 3px solid var(--primary);
+      padding-left: 0.65rem;
+    }
+
+    .skills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .skill-tag {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      padding: 0.35rem 0.75rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-family: var(--font-mono);
+      color: var(--text);
+    }
+
+    .projects-list {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .project-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 1.15rem;
+      transition: border-color 0.15s ease, background-color 0.15s ease, transform 0.1s ease;
+      text-decoration: none;
+      color: inherit;
+      display: block;
+    }
+
+    .project-card:hover {
+      border-color: var(--primary);
+      background: var(--card-hover);
+      transform: translateY(-1px);
+    }
+
+    .project-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 0.35rem;
+      gap: 0.5rem;
+    }
+
+    .project-title {
+      font-size: 1.05rem;
+      font-weight: 600;
+      color: var(--primary);
+      font-family: var(--font-mono);
+    }
+
+    .project-desc {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      margin-bottom: 0.75rem;
+      line-height: 1.45;
+    }
+
+    .project-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.35rem;
+    }
+
+    .project-tags span {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      background: var(--tag-bg);
+      color: var(--tag-text);
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+    }
+
+    .contact-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text);
+      padding: 0.55rem 1rem;
+      border-radius: 6px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      font-weight: 500;
+      transition: border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .btn:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    footer {
+      border-top: 1px solid var(--card-border);
+      padding-top: 1.5rem;
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    footer a {
+      color: var(--text-muted);
+      text-decoration: none;
+    }
+
+    footer a:hover {
+      color: var(--primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="status-badge">
+        <span class="status-dot"></span>
+        <span>São Paulo, Brazil • Backend &amp; AI Tooling</span>
+      </div>
+      <h1>Maxwell M. Dalboni</h1>
+      <p class="subtitle">Senior Software Engineer</p>
+      <p class="bio">
+        Engenheiro de software focado em backends resilientes, arquitetura distribuída e tooling para fluxos de trabalho com IA. Desenvolvedor de plugins e extensões para DeepSeek Harness (DSH).
+      </p>
+    </header>
+
+    <main>
+      <section>
+        <h2>Tecnologias &amp; Especialidades</h2>
+        <div class="skills-grid">
+          <span class="skill-tag">Python</span>
+          <span class="skill-tag">Go</span>
+          <span class="skill-tag">PostgreSQL</span>
+          <span class="skill-tag">Redis / Key-Value</span>
+          <span class="skill-tag">Distributed Systems</span>
+          <span class="skill-tag">DeepSeek Harness Plugins</span>
+          <span class="skill-tag">Docker &amp; Linux</span>
+          <span class="skill-tag">REST &amp; gRPC</span>
+        </div>
+      </section>
+
+      <section>
+        <h2>Projetos em Destaque</h2>
+        <div class="projects-list">
+          <a href="https://github.com/mdalboni/dsh-spotlight" class="project-card" target="_blank" rel="noopener">
+            <div class="project-header">
+              <span class="project-title">dsh-spotlight</span>
+            </div>
+            <p class="project-desc">Diálogo de busca global estilo Spotlight / IntelliJ para sessões e chats no DeepSeek Harness.</p>
+            <div class="project-tags">
+              <span>TypeScript</span>
+              <span>DSH Plugin</span>
+              <span>UX / Productivity</span>
+            </div>
+          </a>
+
+          <a href="https://github.com/mdalboni/dsh-mobile" class="project-card" target="_blank" rel="noopener">
+            <div class="project-header">
+              <span class="project-title">dsh-mobile</span>
+            </div>
+            <p class="project-desc">Ajustes de viewport lock, overscroll containment, redimensionamento de teclado virtual e retração automática da barra lateral para mobile no DSH.</p>
+            <div class="project-tags">
+              <span>JavaScript</span>
+              <span>Mobile UX</span>
+              <span>DSH Plugin</span>
+            </div>
+          </a>
+
+          <a href="https://github.com/mdalboni/dsh-static-token" class="project-card" target="_blank" rel="noopener">
+            <div class="project-header">
+              <span class="project-title">dsh-static-token</span>
+            </div>
+            <p class="project-desc">Token estático configurável para autenticação headless e inicialização estável na Web GUI do DSH.</p>
+            <div class="project-tags">
+              <span>Security</span>
+              <span>DevOps</span>
+              <span>DSH Plugin</span>
+            </div>
+          </a>
+
+          <a href="https://github.com/mdalboni/dsh-turn-title" class="project-card" target="_blank" rel="noopener">
+            <div class="project-header">
+              <span class="project-title">dsh-turn-title</span>
+            </div>
+            <p class="project-desc">Titulação automática de sessões após a primeira iteração com botão rápido de atualização no cabeçalho.</p>
+            <div class="project-tags">
+              <span>DSH Plugin</span>
+              <span>LLM Workflow</span>
+            </div>
+          </a>
+
+          <a href="https://github.com/mdalboni/transcriber_cli" class="project-card" target="_blank" rel="noopener">
+            <div class="project-header">
+              <span class="project-title">transcriber_cli</span>
+            </div>
+            <p class="project-desc">Utilitário de linha de comando para transcrição de áudio local e rápida via terminal.</p>
+            <div class="project-tags">
+              <span>Python</span>
+              <span>CLI</span>
+              <span>Audio</span>
+            </div>
+          </a>
+        </div>
+      </section>
+
+      <section>
+        <h2>Contato &amp; Perfis</h2>
+        <div class="contact-links">
+          <a href="https://github.com/mdalboni" class="btn" target="_blank" rel="noopener">
+            GitHub
+          </a>
+          <a href="https://t.me/mdalboni" class="btn" target="_blank" rel="noopener">
+            Telegram
+          </a>
+          <a href="mailto:dalboni.max@hotmail.com" class="btn">
+            E-mail
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <footer>
+      <span>&copy; Maxwell M. Dalboni</span>
+      <a href="https://github.com/mdalboni/mdalboni.github.io" target="_blank" rel="noopener">Source no GitHub</a>
+    </footer>
+  </div>
+</body>
+</html>
